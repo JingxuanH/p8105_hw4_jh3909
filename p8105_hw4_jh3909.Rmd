@@ -25,6 +25,12 @@ pols_month = read_csv("./pols-month.csv") %>%
   mutate(mon = lubridate::floor_date(mon,"month"))%>%
   rename(date = mon)
 
+# Create a president variable
+pols_month = mutate(pols_month, president = prez_dem)
+pols_month[pols_month$president == 0, "president"] = "gop"
+pols_month[pols_month$president == 1, "president"] = "dem"
+pols_month = select(pols_month, -prez_dem, -prez_gop)
+
 #clean the gdp data, round the date to fisrt day of the month
 gdp = read_csv("./GDP.csv") %>%
   clean_names() %>%
@@ -41,13 +47,13 @@ combined_data = left_join(pols_month, gdp, by = "date")
 ```{r}
 # Make a spaghetti plot
 
-gdp_value_over_time = combined_data %>% 
+combined_data %>% 
   filter(!is.na(gdp_value)) %>% 
   mutate(gdp_value = as.numeric(gdp_value)) %>% 
-  ggplot(., aes(x = date, y = gdp_value, group = factor(prez_dem))) + 
+  ggplot(., aes(x = date, y = gdp_value, group = factor(president))) + 
   labs(list(title = "Spaghetti plot showing the GDP value over time", y = paste("gdp_value"))) + 
   geom_path() + 
-  geom_line(aes(colour=factor(prez_dem))) +
+  geom_line(aes(colour=factor(president))) +
   geom_bar(stat = "identity") +
   theme_bw() +
   scale_x_date(date_labels="%b %y",date_breaks  ="12 month")+
