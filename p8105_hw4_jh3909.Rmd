@@ -1,0 +1,37 @@
+---
+title: "p8105_hw4_jh3909"
+author: "Jingxuan He"
+date: "October 23, 2017"
+output: html_document
+---
+
+### Package Prepare
+```{r, warning = FALSE}
+library(tidyverse)
+library(haven)
+library(readxl)
+library(janitor)
+library(ggridges)
+library(hexbin)
+library(knitr)
+library(grid)
+```
+
+# Read and Clean the Data
+```{r}
+# clean the pols data, round the date to fisrt day of the month and rename the mon variable
+pols_month = read_csv("./pols-month.csv") %>% 
+  clean_names() %>%
+  mutate(mon = lubridate::floor_date(mon,"month"))%>%
+  rename(date = mon)
+
+#clean the gdp data, round the date to fisrt day of the month
+gdp = read_csv("./GDP.csv") %>%
+  clean_names() %>%
+  mutate(date = lubridate::floor_date(date, "month")) %>%
+  filter(!(value == "."))
+
+#combine the pols and gdp data
+combined_data = left_join(pols_month, gdp, by = "date")
+
+```
