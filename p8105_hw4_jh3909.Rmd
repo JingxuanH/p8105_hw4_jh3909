@@ -17,7 +17,7 @@ library(knitr)
 library(grid)
 ```
 
-# Read and Clean the Data
+# Read and Clean the Data－Jingxuan
 ```{r}
 # clean the pols data, round the date to fisrt day of the month and rename the mon variable
 pols_month = read_csv("./pols-month.csv") %>% 
@@ -39,10 +39,10 @@ gdp = read_csv("./GDP.csv") %>%
 
 #combine the pols and gdp data
 combined_data = left_join(pols_month, gdp, by = "date")
-
+combined_data
 ```
 
-# Create a plot showing the GDP value over time, including the party of the president in an informative aesthetic
+# Create a plot showing the GDP value over time, including the party of the president in an informative aesthetic- Yue
 
 ```{r}
 # Make a spaghetti plot
@@ -50,9 +50,9 @@ combined_data = left_join(pols_month, gdp, by = "date")
 combined_data %>% 
   filter(!is.na(gdp_value)) %>% 
   mutate(gdp_value = as.numeric(gdp_value)) %>% 
-  ggplot(., aes(x = date, y = gdp_value)) + 
-  labs(list(title = "Spaghetti plot showing the GDP value over time", y = paste("gdp_value"))) + 
-  geom_line(aes(colour=factor(president))) +
+  ggplot(., aes(x = date, y = gdp_value,colour=factor(president))) + 
+  labs(list(title = "GDP value over time", y = paste("gdp_value"))) + 
+  geom_line(aes(group=1)) +
   theme_bw() +
   scale_x_date(date_labels="%b %y",date_breaks  ="36 month")+
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -63,4 +63,4 @@ combined_data %>%
 ```
 ```
 
-**Results and explanation**: I made a spaghetti plot to see how the GDP value change over time and grouped the GDP value by the factor that whether the president is republican or democratic. From the graph, we can see that during July 1949 and July 1951, there are big fluctuations of gdp_value when the president was democratic. Additionally, there is peak at around 19 gdp_value in july 1951. Then the GDP value decreased and steadily increased until Jult 1978. After that, the GDP value slowly decreased and there is peak of GDP value at negative value in Junly 2009.
+**Results and explanation**: We made a spaghetti plot to see how the GDP value change over time and grouped the GDP value by the factor that whether the president is republican or democratic. From the graph, we can see that between August 1947 and August 1950, there is a big fluctuation of GDP value when the president was democratic. Additionally, there is peak at around 19 GDP value in 1951. Overall trend of the GDP value remained steady while in 1977, there is a small peak.
